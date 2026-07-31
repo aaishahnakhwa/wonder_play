@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Fredoka", system-ui, -apple-system, sans-serif;
+  --font-fredoka: "Fredoka", system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  font-family: var(--font-fredoka);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #fefcf0;
+  color: #374151;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Custom anims */
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.95;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+.float-item {
+  animation: float-gentle 6s ease-in-out infinite;
+}
+
+.pulse-item {
+  animation: pulse-soft 3s ease-in-out infinite;
+}
+
+/* Custom background patterns */
+.kids-grid {
+  background-image: radial-gradient(#e5e7eb 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+/* Ripple animations */
+.ripple {
+  position: absolute;
+  border: 4px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  animation: ripple-effect 0.6s linear;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+@keyframes ripple-effect {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 1;
+  }
+  100% {
+    width: 150px;
+    height: 150px;
+    opacity: 0;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #fffdf0;
+}
+::-webkit-scrollbar-thumb {
+  background: #fbcfe8;
+  border-radius: 10px;
+  border: 2px solid #fffdf0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #f472b6;
+}
