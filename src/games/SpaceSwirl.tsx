@@ -6,7 +6,8 @@ import {
   RotateCcw,
   Sparkles,
   Compass,
-  Palette
+  Palette,
+  X
 } from 'lucide-react';
 import { synth } from '../utils/synth';
 
@@ -59,6 +60,7 @@ export const SpaceSwirl: React.FC<SpaceSwirlProps> = ({ onBack }) => {
   const [trailLength, setTrailLength] = useState(0.08); // canvas alpha clear (0.02 - long trails, 0.3 - short)
   const [volume, setVolume] = useState(synth.getVolume() * 100);
   const [showSettings, setShowSettings] = useState(false);
+  const [showHelper, setShowHelper] = useState(true);
 
   // Entities
   const nodes = useRef<SpaceNode[]>([]);
@@ -785,11 +787,20 @@ export const SpaceSwirl: React.FC<SpaceSwirlProps> = ({ onBack }) => {
       </AnimatePresence>
 
       {/* Floating Instructions Banner */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 pointer-events-none select-none text-center">
-        <p className="text-slate-200 text-xs md:text-sm font-semibold drop-shadow-sm flex items-center gap-1.5 justify-center">
-          <Sparkles size={16} className="text-yellow-400" /> Tap empty space to place stars, repellers, or black holes! Drag nodes to move them.
-        </p>
-      </div>
+      {showHelper && (
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/15 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 select-none text-center flex items-center gap-3">
+          <p className="text-slate-200 text-xs md:text-sm font-semibold drop-shadow-sm flex items-center gap-1.5 justify-center">
+            <Sparkles size={16} className="text-yellow-400" /> Tap empty space to place stars, repellers, or black holes! Drag nodes to move them.
+          </p>
+          <button
+            onClick={() => { synth.playPop(); setShowHelper(false); }}
+            className="pointer-events-auto hover:bg-white/20 p-1 rounded-full text-slate-300 hover:text-white transition focus:outline-none"
+            aria-label="Close instructions"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,7 +3,8 @@ import {
   Palette, 
   Sparkles, 
   Trash2, 
-  Undo
+  Undo,
+  X
 } from 'lucide-react';
 import { synth } from '../utils/synth';
 
@@ -46,6 +47,7 @@ export const MagicGarden: React.FC<MagicGardenProps> = ({ onBack }) => {
   const [theme, setTheme] = useState<Theme>('fairy-forest');
   const plants = useRef<Plant[]>([]);
   const sparkles = useRef<SparkleParticle[]>([]);
+  const [showHelper, setShowHelper] = useState(true);
 
   useEffect(() => {
     synth.playPop();
@@ -638,11 +640,20 @@ export const MagicGarden: React.FC<MagicGardenProps> = ({ onBack }) => {
       </div>
 
       {/* Floating Instructions Banner */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 pointer-events-none select-none text-center">
-        <p className="text-slate-800 text-sm font-semibold drop-shadow-sm flex items-center gap-1.5 justify-center">
-          <Sparkles size={16} className="text-yellow-500" /> Click or drag across the screen to watch your magical forest grow!
-        </p>
-      </div>
+      {showHelper && (
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/25 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 select-none text-center flex items-center gap-3">
+          <p className="text-slate-800 text-sm font-semibold drop-shadow-sm flex items-center gap-1.5 justify-center">
+            <Sparkles size={16} className="text-yellow-500" /> Click or drag across the screen to watch your magical forest grow!
+          </p>
+          <button
+            onClick={() => { synth.playPop(); setShowHelper(false); }}
+            className="pointer-events-auto hover:bg-slate-800/10 p-1 rounded-full text-slate-600 hover:text-rose-600 transition focus:outline-none"
+            aria-label="Close instructions"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

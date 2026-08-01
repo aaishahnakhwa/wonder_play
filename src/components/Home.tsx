@@ -234,18 +234,27 @@ export const Home: React.FC<HomeProps> = ({ onSelectGame }) => {
 
       {/* Header Panel */}
       <header className="max-w-6xl mx-auto pt-8 pb-4 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
-        <div className="text-center md:text-left select-none">
-          <motion.h1 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 100, damping: 10 }}
-            className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 via-blue-500 to-emerald-500 drop-shadow-sm select-none cursor-default filter hover:hue-rotate-60 transition-all duration-1000"
-          >
-            Kids Playground 🎪
-          </motion.h1>
-          <p className="text-md md:text-lg text-slate-500 font-bold mt-2">
-            A beautiful, wobbly sensory toybox for curious explorers!
-          </p>
+        <div className="text-center md:text-left select-none flex flex-col sm:flex-row items-center gap-4">
+          <motion.img 
+            src="/app-icon.png" 
+            alt="Wonder Play Icon" 
+            className="w-16 h-16 md:w-20 md:h-20 rounded-2xl shadow-xl border-2 border-white/80 object-cover"
+            whileHover={{ rotate: 12, scale: 1.1 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          />
+          <div>
+            <motion.h1 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 100, damping: 10 }}
+              className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 via-blue-500 to-emerald-500 drop-shadow-sm select-none cursor-default filter hover:hue-rotate-60 transition-all duration-1000"
+            >
+              Wonder Play 🎪
+            </motion.h1>
+            <p className="text-md md:text-lg text-slate-500 font-bold mt-1">
+              A beautiful, wobbly sensory toybox for curious explorers!
+            </p>
+          </div>
         </div>
 
         {/* Global Volume Controller with frosted glass styling */}

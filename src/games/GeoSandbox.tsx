@@ -5,7 +5,8 @@ import {
   Sun, 
   CloudRain, 
   ChevronsUp, 
-  ChevronsDown
+  ChevronsDown,
+  X
 } from 'lucide-react';
 import { synth } from '../utils/synth';
 
@@ -37,6 +38,7 @@ export const GeoSandbox: React.FC<GeoSandboxProps> = ({ onBack }) => {
   const [brushSize, setBrushSize] = useState(6);
   const [showContours, setShowContours] = useState(true);
   const [flowSpeed, setFlowSpeed] = useState(1); // multiplier
+  const [showHelper, setShowHelper] = useState(true);
   const isMouseDown = useRef(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
 
@@ -494,11 +496,20 @@ export const GeoSandbox: React.FC<GeoSandboxProps> = ({ onBack }) => {
       </div>
 
       {/* Floating center instruction bubble */}
-      <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md px-6 py-2 rounded-full border border-white/20 pointer-events-none select-none text-center">
-        <p className="text-white text-xs md:text-sm font-semibold drop-shadow-sm">
-          ⛰️ Drag across screen to sculpt mountains, carve rivers, and pour water!
-        </p>
-      </div>
+      {showHelper && (
+        <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md px-6 py-2 rounded-full border border-white/20 select-none text-center flex items-center gap-3">
+          <p className="text-white text-xs md:text-sm font-semibold drop-shadow-sm">
+            ⛰️ Drag across screen to sculpt mountains, carve rivers, and pour water!
+          </p>
+          <button
+            onClick={() => { synth.playPop(); setShowHelper(false); }}
+            className="pointer-events-auto hover:bg-white/20 p-1 rounded-full text-white hover:text-rose-500 transition focus:outline-none"
+            aria-label="Close instructions"
+          >
+            <X size={12} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

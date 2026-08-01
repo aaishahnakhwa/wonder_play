@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Clock, Zap, RotateCcw } from 'lucide-react';
+import { Trophy, Clock, Zap, RotateCcw, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { synth } from '../utils/synth';
 
@@ -55,6 +55,7 @@ export const BubblePop: React.FC<BubblePopProps> = ({ onBack }) => {
   const [combo, setCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
   const [gameTime, setGameTime] = useState(0); // Count up
+  const [showHelper, setShowHelper] = useState(true);
   
   // Internal refs
   const bubbles = useRef<Bubble[]>([]);
@@ -689,11 +690,20 @@ export const BubblePop: React.FC<BubblePopProps> = ({ onBack }) => {
       )}
 
       {/* Help bubble */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/30 backdrop-blur-md px-6 py-2 rounded-full border border-white/20 select-none text-center pointer-events-none">
-        <p className="text-sky-900 text-sm font-semibold drop-shadow-sm">
-          🎈 Glide your mouse or drag your finger over bubbles to POP them!
-        </p>
-      </div>
+      {showHelper && (
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/35 backdrop-blur-md px-6 py-2 rounded-full border border-white/20 select-none text-center flex items-center gap-3">
+          <p className="text-sky-900 text-sm font-semibold drop-shadow-sm">
+            🎈 Glide your mouse or drag your finger over bubbles to POP them!
+          </p>
+          <button
+            onClick={() => { synth.playPop(); setShowHelper(false); }}
+            className="pointer-events-auto hover:bg-slate-800/10 p-1 rounded-full text-sky-800 hover:text-rose-600 transition focus:outline-none"
+            aria-label="Close instructions"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

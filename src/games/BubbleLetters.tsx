@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { RotateCcw, Volume2, Type } from 'lucide-react';
+import { RotateCcw, Volume2, Type, X } from 'lucide-react';
 import { synth } from '../utils/synth';
 
 interface LetterItem {
@@ -75,6 +75,7 @@ export const BubbleLetters: React.FC<BubbleLettersProps> = ({ onBack }) => {
   // Configuration settings
   const [caseMode, setCaseMode] = useState<'uppercase' | 'lowercase'>('uppercase');
   const [voiceMode, setVoiceMode] = useState<'letter' | 'phonics'>('letter');
+  const [showHelper, setShowHelper] = useState(true);
 
   const bubbles = useRef<LetterBubble[]>([]);
   const particles = useRef<Particle[]>([]);
@@ -442,11 +443,20 @@ export const BubbleLetters: React.FC<BubbleLettersProps> = ({ onBack }) => {
       </div>
 
       {/* Floating help notice */}
-      <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md px-6 py-2 rounded-full border border-white/20 pointer-events-none select-none text-center">
-        <p className="text-slate-800 text-xs md:text-sm font-semibold drop-shadow-sm flex items-center gap-1.5">
-          🎈 Press a key on your keyboard, click the letter buttons, or tap bubbles to POP!
-        </p>
-      </div>
+      {showHelper && (
+        <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md px-6 py-2 rounded-full border border-white/20 select-none text-center flex items-center gap-3">
+          <p className="text-slate-800 text-xs md:text-sm font-semibold drop-shadow-sm flex items-center gap-1.5">
+            🎈 Press a key on your keyboard, click the letter buttons, or tap bubbles to POP!
+          </p>
+          <button
+            onClick={() => { synth.playPop(); setShowHelper(false); }}
+            className="pointer-events-auto hover:bg-slate-800/10 p-1 rounded-full text-slate-600 hover:text-rose-600 transition focus:outline-none"
+            aria-label="Close instructions"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

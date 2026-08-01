@@ -4,7 +4,8 @@ import {
   CloudRain, 
   CloudSnow, 
   Compass,
-  Sprout
+  Sprout,
+  X
 } from 'lucide-react';
 import { synth } from '../utils/synth';
 
@@ -95,6 +96,7 @@ export const ButterflyGarden: React.FC<ButterflyGardenProps> = ({ onBack }) => {
   const [timeOfDay, setTimeOfDay] = useState<number>(10); // 0-24 hour scale
   const [weather, setWeather] = useState<Weather>('sunny');
   const [season, setSeason] = useState<Season>('spring');
+  const [showHelper, setShowHelper] = useState(true);
 
   // Simulation element arrays
   const flowers = useRef<Flower[]>([]);
@@ -980,11 +982,20 @@ export const ButterflyGarden: React.FC<ButterflyGardenProps> = ({ onBack }) => {
       </div>
 
       {/* Floating Instructions Banner */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 pointer-events-none select-none text-center">
-        <p className="text-emerald-950 text-sm font-semibold drop-shadow-sm flex items-center gap-1.5">
-          <Sprout size={16} className="text-emerald-700" /> Click on the ground to grow flowers! Butterflies will land on still cursors.
-        </p>
-      </div>
+      {showHelper && (
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/25 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 select-none text-center flex items-center gap-3">
+          <p className="text-emerald-950 text-sm font-semibold drop-shadow-sm flex items-center gap-1.5">
+            <Sprout size={16} className="text-emerald-700" /> Click on the ground to grow flowers! Butterflies will land on still cursors.
+          </p>
+          <button
+            onClick={() => { synth.playPop(); setShowHelper(false); }}
+            className="pointer-events-auto hover:bg-slate-800/10 p-1 rounded-full text-emerald-900 hover:text-rose-600 transition focus:outline-none"
+            aria-label="Close instructions"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

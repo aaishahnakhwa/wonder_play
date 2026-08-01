@@ -9,7 +9,8 @@ import {
   Paintbrush, 
   Palette,
   Sliders,
-  ChevronDown
+  ChevronDown,
+  X
 } from 'lucide-react';
 import { synth } from '../utils/synth';
 
@@ -63,6 +64,7 @@ export const RainbowPaint: React.FC<RainbowPaintProps> = ({ onBack }) => {
   const [brushSize, setBrushSize] = useState(15);
   const [opacity, setOpacity] = useState(1.0);
   const [glowIntensity, setGlowIntensity] = useState(10);
+  const [showHelper, setShowHelper] = useState(true);
   const [color, setColor] = useState('#ff4757');
   const [symmetry, setSymmetry] = useState<SymmetryMode>('none');
   const [openSettings, setOpenSettings] = useState(false);
@@ -794,11 +796,20 @@ export const RainbowPaint: React.FC<RainbowPaintProps> = ({ onBack }) => {
       </AnimatePresence>
 
       {/* Floating Instructions Banner */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md px-6 py-2 rounded-full border border-white/20 pointer-events-none select-none text-center">
-        <p className="text-slate-700 text-sm font-semibold drop-shadow-sm">
-          🖌️ Paint across the screen! Toggle **Symmetry Mirrors** to draw mandala shapes.
-        </p>
-      </div>
+      {showHelper && (
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/25 backdrop-blur-md px-6 py-2 rounded-full border border-white/20 select-none text-center flex items-center gap-3">
+          <p className="text-slate-700 text-sm font-semibold drop-shadow-sm">
+            🖌️ Paint across the screen! Toggle **Symmetry Mirrors** to draw mandala shapes.
+          </p>
+          <button
+            onClick={() => { synth.playPop(); setShowHelper(false); }}
+            className="pointer-events-auto hover:bg-slate-800/10 p-1 rounded-full text-slate-600 hover:text-rose-600 transition focus:outline-none"
+            aria-label="Close instructions"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

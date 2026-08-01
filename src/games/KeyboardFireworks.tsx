@@ -48,6 +48,7 @@ export const KeyboardFireworks: React.FC<KeyboardFireworksProps> = ({ onBack }) 
 
   // Settings
   const [showSettings, setShowSettings] = useState(false);
+  const [showHelper, setShowHelper] = useState(true);
   const [mode, setMode] = useState<'fireworks' | 'flowers'>('fireworks');
   const [density, setDensity] = useState(3.5); // Multiplier for particle counts
   const [speed, setSpeed] = useState(1); // Speed modifier
@@ -525,11 +526,20 @@ export const KeyboardFireworks: React.FC<KeyboardFireworksProps> = ({ onBack }) 
       </button>
 
       {/* Floating Instructions Banner */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 pointer-events-none select-none text-center">
-        <p className="text-white text-sm md:text-base font-semibold drop-shadow-md tracking-wider">
-          ⌨️ Press any key on your keyboard or tap the screen to play!
-        </p>
-      </div>
+      {showHelper && (
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white/25 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 select-none text-center flex items-center gap-3">
+          <p className="text-white text-sm md:text-base font-semibold drop-shadow-md tracking-wider">
+            ⌨️ Press any key on your keyboard or tap the screen to play!
+          </p>
+          <button
+            onClick={() => { synth.playPop(); setShowHelper(false); }}
+            className="pointer-events-auto hover:bg-white/20 p-1 rounded-full text-white/80 hover:text-white transition focus:outline-none"
+            aria-label="Close instructions"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
       {/* Settings Modal Drawer */}
       <AnimatePresence>
