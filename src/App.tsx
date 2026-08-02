@@ -251,6 +251,11 @@ function App() {
         {renderGame()}
       </AnimatePresence>
 
+      {/* Persistent Watermark Badge */}
+      <div className="fixed bottom-4 right-4 z-40 bg-white/30 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/30 shadow-md pointer-events-none select-none text-[10px] md:text-xs font-black text-slate-500/70 tracking-widest uppercase">
+        AAN
+      </div>
+
       {/* Instruction Modal Overlay */}
       <AnimatePresence>
         {showModal && selectedInstructions && (
@@ -282,7 +287,7 @@ function App() {
 
               <div className="text-center">
                 {/* Large animated emoji */}
-                <motion.div 
+                <motion.div
                   animate={{ y: [0, -10, 0] }}
                   transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                   className="text-7xl mb-4 select-none"
