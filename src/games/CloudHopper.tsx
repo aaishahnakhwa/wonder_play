@@ -4,7 +4,7 @@ import { RotateCcw, X, Volume2, Settings } from 'lucide-react';
 import { synth } from '../utils/synth';
 
 type PlatformType = 'normal' | 'mushroom' | 'cloud' | 'bubble';
-type CharacterType = 'bunny' | 'dino' | 'astronaut';
+type CharacterType = 'bunny' | 'dino';
 
 interface Platform {
   id: number;
@@ -834,14 +834,20 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
       ctx.translate(p.w / 2, p.h / 2);
       ctx.rotate(wiggle);
 
-      if (p.facing === 'left') {
+      // Dino is naturally left-facing, so we flip it when going right
+      let shouldFlip = p.facing === 'left';
+      if (character === 'dino') {
+        shouldFlip = p.facing === 'right';
+      }
+
+      if (shouldFlip) {
         ctx.scale(-1, 1);
       }
 
       ctx.font = '34px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      const charEmoji = character === 'bunny' ? '🐰' : character === 'dino' ? '🦖' : '👨🚀';
+      const charEmoji = character === 'bunny' ? '🐰' : '🦖';
       ctx.fillText(charEmoji, 0, 0);
 
       ctx.restore();
@@ -1013,7 +1019,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
                 <span>Choose Character</span>
                 <span className="text-emerald-600 font-extrabold capitalize">{character}</span>
               </div>
-              <div className="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-2xl text-xs font-bold text-slate-600">
+              <div className="grid grid-cols-2 gap-1.5 bg-slate-100 p-1 rounded-2xl text-xs font-bold text-slate-600">
                 <button
                   onClick={() => { synth.playPop(); setCharacter('bunny'); }}
                   className={`py-2 rounded-xl transition ${character === 'bunny' ? 'bg-emerald-500 text-white shadow' : 'hover:bg-slate-200'}`}
@@ -1025,12 +1031,6 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
                   className={`py-2 rounded-xl transition ${character === 'dino' ? 'bg-emerald-500 text-white shadow' : 'hover:bg-slate-200'}`}
                 >
                   🦖 Dino
-                </button>
-                <button
-                  onClick={() => { synth.playPop(); setCharacter('astronaut'); }}
-                  className={`py-2 rounded-xl transition ${character === 'astronaut' ? 'bg-emerald-500 text-white shadow' : 'hover:bg-slate-200'}`}
-                >
-                  🚀 Space
                 </button>
               </div>
             </div>
