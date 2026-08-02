@@ -10,7 +10,8 @@ import {
   Smile, 
   Volume2, 
   VolumeX,
-  Compass
+  Compass,
+  Gamepad
 } from 'lucide-react';
 import { synth } from '../utils/synth';
 
@@ -115,6 +116,16 @@ const games: GameCard[] = [
     gradient: 'from-slate-900/90 via-indigo-950/90 to-purple-950/90',
     neonGlow: 'hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] border-indigo-400/40',
     delay: 0.9,
+  },
+  {
+    id: 'cloud-hopper',
+    title: 'Cloud Hopper',
+    description: 'Run and jump across floating cloud platforms and bouncy mushrooms in a 2D side-scrolling world!',
+    emoji: '🐰',
+    icon: Gamepad,
+    gradient: 'from-yellow-400/90 via-orange-400/90 to-amber-500/90',
+    neonGlow: 'hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] border-amber-300/40',
+    delay: 1.0,
   },
 ];
 

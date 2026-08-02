@@ -10,6 +10,7 @@ import { RainMaker } from './games/RainMaker';
 import { BubbleLetters } from './games/BubbleLetters';
 import { GeoSandbox } from './games/GeoSandbox';
 import { SpaceSwirl } from './games/SpaceSwirl';
+import { CloudHopper } from './games/CloudHopper';
 import { Play, X } from 'lucide-react';
 import { synth } from './utils/synth';
 import './App.css';
@@ -85,6 +86,13 @@ const gameInstructions: Record<string, Instruction> = {
     text: 'Place gravity stars, wind repellers, and black holes to orbit thousands of velocity-aligned neon comet particles.',
     tips: 'Black holes swallow stardust, triggering gravitational lens shockwaves!',
     gradient: 'from-slate-900 via-indigo-950 to-purple-950'
+  },
+  'cloud-hopper': {
+    title: 'Cloud Hopper',
+    emoji: '🐰',
+    text: '🏰 GOAL: Reach the Castle!\nRun and jump across floating cloud platforms and bouncy spring mushrooms to make it to the finish castle.',
+    tips: 'Collect as many stars (⭐) as you can to set a high score!\n\nElements:\n🟩 Grasslands - Stable, solid path\n🍄 Mushrooms - Springs you high in the air\n☁️ Drift Clouds - Slow moving platforms\n🫧 Bubbles - Pop 1 second after you land\n🎈 Balloons - Pop them for a jump boost & confetti\n🌀 Wind Vortices - Blows you high with sparkles\n\n💡 Tip: Press jump twice in mid-air to Double Jump!',
+    gradient: 'from-yellow-400 via-orange-400 to-amber-500'
   }
 };
 
@@ -227,6 +235,19 @@ function App() {
             <SpaceSwirl onBack={() => setActiveGame(null)} />
           </motion.div>
         );
+      case 'cloud-hopper':
+        return (
+          <motion.div
+            key="cloud-hopper"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="w-full h-full"
+          >
+            <CloudHopper onBack={() => setActiveGame(null)} />
+          </motion.div>
+        );
       default:
         return (
           <motion.div
@@ -310,7 +331,7 @@ function App() {
                   <span className="text-2xl select-none">💡</span>
                   <div className="flex flex-col">
                     <span className="text-xs font-extrabold text-amber-700 uppercase">Tip for extra fun</span>
-                    <p className="text-xs font-bold text-amber-950 mt-0.5 leading-normal">{selectedInstructions.tips}</p>
+                    <p className="text-xs font-bold text-amber-950 mt-0.5 leading-normal whitespace-pre-line">{selectedInstructions.tips}</p>
                   </div>
                 </div>
 
