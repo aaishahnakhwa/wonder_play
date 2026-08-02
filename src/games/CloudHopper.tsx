@@ -206,7 +206,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
     while (nextX < levelLength - 400) {
       const typeRand = Math.random();
       let type: PlatformType = 'normal';
-      let w = 220; // wider default platforms (easy for kids to land)
+      let w = 220; // wider platforms
       let h = 24;
       let vx: number | undefined;
       let startX: number | undefined;
@@ -216,18 +216,18 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         type = 'normal';
         w = 180 + Math.random() * 80;
       } else if (typeRand < 0.7) {
-        type = 'cloud'; // drifting cloud (slow moving, wider)
+        type = 'cloud';
         w = 160 + Math.random() * 60;
-        vx = (Math.random() > 0.5 ? 1 : -1) * (0.4 + Math.random() * 0.4); // extremely slow cloud drifting
+        vx = (Math.random() > 0.5 ? 1 : -1) * (0.4 + Math.random() * 0.4);
         startX = nextX;
         rangeX = 80 + Math.random() * 50;
       } else if (typeRand < 0.88) {
-        type = 'mushroom'; // super bounce
-        w = 80; // wider mushroom cap
+        type = 'mushroom';
+        w = 80;
         h = 30;
       } else {
-        type = 'bubble'; // dissolves slowly
-        w = 90; // wider bubble
+        type = 'bubble';
+        w = 90;
         h = 20;
       }
 
@@ -256,14 +256,13 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         });
       }
 
-      // Small gaps and flat elevations for ultra-easy jumps
-      // Gap size is regulated by platformSpacing settings state
+      // Small gaps and flat elevations
       const minGap = Math.max(45, platformSpacing - 20);
       const maxGap = platformSpacing + 20;
       const gap = minGap + Math.random() * (maxGap - minGap);
-      const heightStep = (Math.random() - 0.5) * 45; // very flat vertical step transitions
+      const heightStep = (Math.random() - 0.5) * 45;
 
-      // Spawn wind booster in gaps based on boosterFrequency spawn probability settings
+      // Spawn wind booster in gaps
       if (gap > 80 && (Math.random() * 100) < boosterFrequency) {
         boostersList.push({
           id: platformIdCounter++,
@@ -274,7 +273,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         });
       }
 
-      // Spawn floating balloons in gaps for extra fun!
+      // Spawn floating balloons in gaps
       if (gap > 95 && Math.random() > 0.3) {
         const balloonColors = ['#f43f5e', '#3b82f6', '#eab308', '#ec4899', '#a855f7', '#06b6d4'];
         balloonList.push({
@@ -290,7 +289,6 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
       nextX += w + gap;
       nextY += heightStep;
 
-      // Keep platform heights clamped inside bounds of play
       if (nextY > 500) nextY = 480;
       if (nextY < 180) nextY = 220;
     }
@@ -334,7 +332,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
 
       // Horizontal camera center tracking
       const targetCamX = p.x - canvas.width * 0.4;
-      cameraX.current += (targetCamX - cameraX.current) * 0.08; // smooth camera scroll
+      cameraX.current += (targetCamX - cameraX.current) * 0.08;
 
       // Clamp camera X bounds
       if (cameraX.current < 0) cameraX.current = 0;
@@ -342,13 +340,13 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
       if (cameraX.current > maxCamX && maxCamX > 0) cameraX.current = maxCamX;
 
       // 2. BACKGROUND SCENERY (Parallax Scrolling sky)
-      ctx.fillStyle = '#ebf8ff'; // sky blue
+      ctx.fillStyle = '#ebf8ff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Draw background sun/clouds
       ctx.save();
       ctx.globalAlpha = 0.25;
-      ctx.fillStyle = '#fde047'; // sun glow
+      ctx.fillStyle = '#fde047';
       ctx.beginPath();
       ctx.arc(canvas.width * 0.85, 120, 90, 0, Math.PI * 2);
       ctx.fill();
@@ -356,7 +354,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
 
       // Parallax rolling hills
       ctx.save();
-      ctx.fillStyle = '#bbf7d0'; // light green hill
+      ctx.fillStyle = '#bbf7d0';
       ctx.beginPath();
       for (let xIdx = 0; xIdx <= canvas.width; xIdx += 20) {
         const hillY = canvas.height - 40 - Math.sin((xIdx + cameraX.current * 0.12) * 0.003) * 30;
@@ -368,7 +366,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
       ctx.fill();
 
       // Foreground hills
-      ctx.fillStyle = '#86efac'; // brighter green
+      ctx.fillStyle = '#86efac';
       ctx.beginPath();
       for (let xIdx = 0; xIdx <= canvas.width; xIdx += 20) {
         const hillY = canvas.height - 15 - Math.sin((xIdx + cameraX.current * 0.35) * 0.005) * 20;
@@ -404,7 +402,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
           plat.popTimer -= 1;
           if (plat.popTimer <= 0) {
             plat.isPopped = true;
-            plat.respawnTimer = 240; // 4 seconds at 60 fps
+            plat.respawnTimer = 240;
             triggerPoofParticles(plat.x + plat.w / 2, plat.y + plat.h / 2, '#22d3ee', 12);
             if (Math.abs(plat.x - p.x) < 500) {
               synth.playPop();
@@ -437,7 +435,6 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         }
 
         if (moveX !== 0) {
-          // Acceleration scaled by speedFactorRef.current mutable ref instantly
           p.vx += moveX * (p.isGrounded ? 0.28 : 0.22) * speedFactorRef.current;
           p.runPhase += 0.22 * speedFactorRef.current;
           
@@ -467,7 +464,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         if (p.vx > maxHorizontalSpeed) p.vx = maxHorizontalSpeed;
         if (p.vx < -maxHorizontalSpeed) p.vx = -maxHorizontalSpeed;
 
-        // Floatier gravity (reduced from 0.38 to 0.26)
+        // Floatier gravity
         p.vy += 0.26;
 
         // Update Position coordinates
@@ -491,16 +488,15 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
             p.x + p.w - 5 > plat.x &&
             p.x + 5 < plat.x + plat.w &&
             p.y + p.h >= plat.y &&
-            p.y + p.h - p.vy <= plat.y + 12; // top landing threshold
+            p.y + p.h - p.vy <= plat.y + 12;
 
           if (isIntersecting && p.vy > 0) {
-            // Landed on top of the platform!
             p.y = plat.y - p.h;
             p.vy = 0;
             p.isGrounded = true;
-            p.hasDoubleJump = true; // reset double jump ability
+            p.hasDoubleJump = true;
 
-            // Checkpoint checkpoint update (checkpoint platform lands)
+            // Checkpoint update
             if (plat.type === 'normal' || plat.type === 'cloud') {
               lastSafeX.current = p.x;
               lastSafeY.current = p.y;
@@ -508,18 +504,16 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
 
             // Platform types specific events
             if (plat.type === 'mushroom') {
-              p.vy = -10.5; // spring launch
+              p.vy = -10.5;
               p.isGrounded = false;
               synth.playChime();
               triggerPoofParticles(plat.x + plat.w / 2, plat.y, '#f472b6', 15);
             } 
             else if (plat.type === 'cloud' && plat.vx) {
-              // Move along with drifting clouds
               p.x += plat.vx;
             } 
             else if (plat.type === 'bubble' && plat.popTimer === undefined) {
-              // Trigger bubble dissolving fuse
-              plat.popTimer = 50; // pops in 50 frames (~0.8s)
+              plat.popTimer = 50;
             }
           }
         });
@@ -528,10 +522,9 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         currentBoosters.forEach((wb) => {
           const dist = Math.hypot((p.x + p.w / 2) - wb.x, (p.y + p.h / 2) - wb.y);
           if (dist < wb.r + 15) {
-            // Wind booster spring launches the player up!
             p.vy = -11.0;
             p.isGrounded = false;
-            p.hasDoubleJump = true; // resets double jump
+            p.hasDoubleJump = true;
             if (Math.random() > 0.75) {
               synth.playSparkle();
             }
@@ -539,16 +532,16 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
           }
         });
 
-        // Balloons collision (pop balloons for extra jumps and confetti!)
+        // Balloons collision
         currentBalloons.forEach((bl) => {
           if (bl.popped) return;
 
           const dist = Math.hypot((p.x + p.w / 2) - bl.x, (p.y + p.h / 2) - (bl.y - 12));
           if (dist < 32) {
             bl.popped = true;
-            p.vy = -8.5; // bounce up on balloon pop
+            p.vy = -8.5;
             p.isGrounded = false;
-            p.hasDoubleJump = true; // resets double jump
+            p.hasDoubleJump = true;
             synth.playSparkle();
             
             // Pop confetti burst
@@ -577,18 +570,18 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
           
           if (!isKeyboard || jumpKeyReleased.current) {
             if (p.isGrounded) {
-              p.vy = -7.5; // jump strength
+              p.vy = -7.5;
               p.isGrounded = false;
               p.hasDoubleJump = true;
               synth.playPop();
-              if (isKeyboard) jumpKeyReleased.current = false; // block until key release
+              if (isKeyboard) jumpKeyReleased.current = false;
               mobileControls.current.jump = false;
             } else if (p.hasDoubleJump) {
-              p.vy = -6.8; // mid-air double jump
+              p.vy = -6.8;
               p.hasDoubleJump = false;
               synth.playSparkle();
-              triggerPoofParticles(p.x + p.w / 2, p.y + p.h / 2, '#c084fc', 12); // purple sparkles poof
-              if (isKeyboard) jumpKeyReleased.current = false; // block until key release
+              triggerPoofParticles(p.x + p.w / 2, p.y + p.h / 2, '#c084fc', 12);
+              if (isKeyboard) jumpKeyReleased.current = false;
               mobileControls.current.jump = false;
             }
           }
@@ -623,19 +616,17 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
 
       // 6. CATCH RESCUE CLOUD CHECKPOINT LOGIC
       if (rescueActive.current) {
-        // Animate rescue cloud floating up to catch player
         rescueCloudY.current -= 12;
 
         if (rescueCloudY.current <= canvas.height - 100) {
           // Cloud caught the player! Reset position safely to checkpoint
           p.x = lastSafeX.current;
-          p.y = lastSafeY.current - 40; // slightly above platform
+          p.y = lastSafeY.current - 40;
           p.vx = 0;
           p.vy = 0;
           p.fadeAlpha = 0;
           p.hasDoubleJump = true;
           
-          // Re-adjust camera X to focus on checkpoint
           cameraX.current = p.x - canvas.width * 0.4;
           if (cameraX.current < 0) cameraX.current = 0;
           const maxCam = levelLength - canvas.width;
@@ -676,7 +667,6 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         ctx.translate(wb.x - cameraX.current, wb.y);
         ctx.scale(pulseScale, pulseScale);
 
-        // Circular wind portal
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
         ctx.lineWidth = 3.5;
         ctx.beginPath();
@@ -745,18 +735,16 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         ctx.translate(plat.x - cameraX.current, plat.y);
 
         if (plat.type === 'normal') {
-          // Green grassy land rectangular board
           const grassGrad = ctx.createLinearGradient(0, 0, 0, plat.h);
-          grassGrad.addColorStop(0, '#22c55e'); // green-500
-          grassGrad.addColorStop(0.3, '#15803d'); // green-700
-          grassGrad.addColorStop(1, '#78350f'); // brown dirt bottom
+          grassGrad.addColorStop(0, '#22c55e');
+          grassGrad.addColorStop(0.3, '#15803d');
+          grassGrad.addColorStop(1, '#78350f');
 
           ctx.fillStyle = grassGrad;
           ctx.beginPath();
           ctx.roundRect(0, 0, plat.w, plat.h, [8, 8, 2, 2]);
           ctx.fill();
 
-          // Green blade contours decoration
           ctx.strokeStyle = '#86efac';
           ctx.lineWidth = 2.5;
           ctx.beginPath();
@@ -765,8 +753,6 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
           ctx.stroke();
         } 
         else if (plat.type === 'mushroom') {
-          // Bouncy pink springboard mushroom 🍄
-          // Cap
           const capGrad = ctx.createRadialGradient(plat.w / 2, plat.h / 2, 2, plat.w / 2, plat.h / 2, plat.w / 2);
           capGrad.addColorStop(0, '#f472b6');
           capGrad.addColorStop(0.7, '#db2777');
@@ -777,7 +763,6 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
           ctx.roundRect(0, 0, plat.w, 16, [14, 14, 2, 2]);
           ctx.fill();
 
-          // Spots
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
           ctx.arc(15, 7, 3, 0, Math.PI * 2);
@@ -785,20 +770,17 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
           ctx.arc(plat.w - 15, 7, 3, 0, Math.PI * 2);
           ctx.fill();
 
-          // Stem
           ctx.fillStyle = '#fdf2f8';
           ctx.beginPath();
           ctx.roundRect(plat.w / 2 - 8, 16, 16, 14, [0, 0, 4, 4]);
           ctx.fill();
         } 
         else if (plat.type === 'cloud') {
-          // Puffy drifting cloud platform ☁️
           ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
           ctx.strokeStyle = '#e2e8f0';
           ctx.lineWidth = 1.5;
 
           ctx.beginPath();
-          // Draw cloud outline using multi-circles
           ctx.arc(18, plat.h / 2, 14, 0, Math.PI * 2);
           ctx.arc(plat.w / 2, plat.h / 2 - 4, 16, 0, Math.PI * 2);
           ctx.arc(plat.w - 18, plat.h / 2, 14, 0, Math.PI * 2);
@@ -806,21 +788,19 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
           ctx.stroke();
         } 
         else if (plat.type === 'bubble') {
-          // Translucent bubble platform 🫧
           const wobble = plat.popTimer ? Math.sin(plat.popTimer * 0.5) * 3 : 0;
           ctx.translate(wobble, 0);
 
           const bubbleGrad = ctx.createRadialGradient(plat.w / 2, plat.h / 2, 2, plat.w / 2, plat.h / 2, plat.w / 2);
-          bubbleGrad.addColorStop(0, 'rgba(34, 211, 238, 0.2)'); // cyan-400
-          bubbleGrad.addColorStop(0.8, 'rgba(56, 189, 248, 0.5)'); // sky-300
-          bubbleGrad.addColorStop(1, '#06b6d4'); // cyan solid rim
+          bubbleGrad.addColorStop(0, 'rgba(34, 211, 238, 0.2)');
+          bubbleGrad.addColorStop(0.8, 'rgba(56, 189, 248, 0.5)');
+          bubbleGrad.addColorStop(1, '#06b6d4');
 
           ctx.fillStyle = bubbleGrad;
           ctx.beginPath();
           ctx.roundRect(0, 0, plat.w, plat.h, 10);
           ctx.fill();
 
-          // Bubble glint
           ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
           ctx.beginPath();
           ctx.arc(10, 6, 2.5, 0, Math.PI * 2);
@@ -838,8 +818,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
       ctx.textBaseline = 'bottom';
       ctx.fillText('🏰', 0, 140);
       
-      // Rainbow arch above castle
-      ctx.strokeStyle = 'rgba(251, 146, 60, 0.35)'; // gold glow
+      ctx.strokeStyle = 'rgba(251, 146, 60, 0.35)';
       ctx.lineWidth = 8;
       ctx.beginPath();
       ctx.arc(0, 140, 120, Math.PI, 0);
@@ -851,17 +830,14 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
       ctx.translate(p.x - cameraX.current, p.y);
       ctx.globalAlpha = p.fadeAlpha;
 
-      // Running wiggle animation
       const wiggle = Math.sin(p.runPhase) * 0.12;
       ctx.translate(p.w / 2, p.h / 2);
       ctx.rotate(wiggle);
 
-      // Facing orientation flip
       if (p.facing === 'left') {
         ctx.scale(-1, 1);
       }
 
-      // Draw Emoji representation
       ctx.font = '34px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -874,7 +850,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
       if (rescueActive.current) {
         ctx.save();
         ctx.fillStyle = '#ffffff';
-        ctx.strokeStyle = '#bae6fd'; // sky-200 border
+        ctx.strokeStyle = '#bae6fd';
         ctx.lineWidth = 4;
         ctx.shadowColor = 'rgba(186, 230, 253, 0.5)';
         ctx.shadowBlur = 15;
@@ -883,7 +859,6 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         const cx = canvas.width / 2;
 
         ctx.beginPath();
-        // Giant cloud catcher structure
         ctx.arc(cx - 100, cy, 50, 0, Math.PI * 2);
         ctx.arc(cx - 40, cy - 25, 70, 0, Math.PI * 2);
         ctx.arc(cx + 40, cy - 25, 70, 0, Math.PI * 2);
@@ -952,7 +927,6 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
   const handleTouchButton = (btn: 'left' | 'right' | 'jump', state: boolean) => {
     mobileControls.current[btn] = state;
     if (state && btn === 'jump') {
-      // Small audio pop on touch jump
       synth.playPop();
     }
   };
@@ -969,99 +943,101 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         className="w-full h-full block"
       />
 
-      {/* Back and Restart Buttons */}
-      <div className="absolute top-6 left-6 z-10 flex gap-2">
+      {/* Back and Restart Buttons (Optimized responsive left spacing) */}
+      <div className="absolute top-3 left-3 sm:top-6 sm:left-6 z-10 flex gap-1.5 sm:gap-2">
         <button
           onClick={() => {
             synth.playPop();
             onBack();
           }}
-          className="bg-white/95 hover:bg-white text-slate-800 font-bold px-6 py-3 rounded-full border-4 border-slate-200 hover:border-pink-300 shadow-md transition"
+          className="bg-white/95 hover:bg-white text-slate-800 font-bold px-3 py-2 sm:px-6 sm:py-3 rounded-full border-2 sm:border-4 border-slate-200 hover:border-pink-300 shadow-md transition flex items-center justify-center text-xs sm:text-sm"
         >
-          &larr; Exit
+          <span className="sm:inline mr-1 sm:mr-0">&larr;</span>
+          <span className="hidden sm:inline">Exit</span>
         </button>
 
         <button
           onClick={restartGame}
-          className="bg-white/95 hover:bg-white text-slate-600 font-bold p-3 rounded-full border-4 border-slate-200 hover:border-pink-300 shadow-md transition"
+          className="bg-white/95 hover:bg-white text-slate-600 font-bold p-2 sm:p-3 rounded-full border-2 sm:border-4 border-slate-200 hover:border-pink-300 shadow-md transition"
           title="Restart Level"
         >
-          <RotateCcw size={20} />
+          <RotateCcw size={16} className="sm:w-5 sm:h-5" />
         </button>
       </div>
 
-      {/* Stats Counter & Goal (Top center) */}
-      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10 bg-white/90 backdrop-blur-md px-6 py-2.5 rounded-full border-4 border-pink-100 shadow-lg flex items-center gap-4">
-        <div className="flex items-center gap-1.5 select-none">
-          <span className="text-2xl">⭐</span>
-          <span className="text-lg font-black text-amber-600">{starsCount} Stars</span>
+      {/* Stats Counter & Goal (Top center, responsive text scales down on mobile) */}
+      <div className="absolute top-3 left-1/2 transform -translate-x-1/2 z-10 bg-white/90 backdrop-blur-md px-3 py-1.5 sm:px-6 sm:py-2.5 rounded-full border-2 sm:border-4 border-pink-100 shadow-lg flex items-center gap-2 sm:gap-4 max-w-[50%] xs:max-w-none">
+        <div className="flex items-center gap-1 sm:gap-1.5 select-none">
+          <span className="text-lg sm:text-2xl">⭐</span>
+          <span className="text-xs sm:text-lg font-black text-amber-600 leading-none">{starsCount} <span className="hidden xs:inline">Stars</span></span>
         </div>
-        <div className="h-6 w-0.5 bg-slate-200 select-none" />
-        <div className="flex items-center gap-1.5 select-none">
-          <span className="text-2xl">🏰</span>
-          <span className="text-lg font-black text-emerald-600">Goal: Reach the Castle!</span>
+        <div className="h-4 sm:h-6 w-0.5 bg-slate-200 select-none" />
+        <div className="flex items-center gap-1 sm:gap-1.5 select-none">
+          <span className="text-lg sm:text-2xl">🏰</span>
+          <span className="text-xs sm:text-lg font-black text-emerald-600 leading-none truncate max-w-[70px] xs:max-w-none">
+            <span className="hidden xs:inline">Goal: </span>Castle!
+          </span>
         </div>
       </div>
 
-      {/* Control custom settings panel (Right top) */}
-      <div className="absolute top-6 right-6 z-10 flex items-center gap-3 bg-white/90 backdrop-blur-md px-6 py-3 rounded-3xl border-4 border-emerald-100 shadow-md">
-        
-        {/* Character Selector */}
-        <div className="flex items-center gap-1.5 border-r border-slate-200 pr-3">
-          <span className="text-[10px] text-slate-400 font-extrabold uppercase select-none">Avatar:</span>
-          <div className="flex bg-slate-100 p-0.5 rounded-xl text-xs font-bold text-slate-600">
-            <button
-              onClick={() => { synth.playPop(); setCharacter('bunny'); }}
-              className={`px-3 py-1.5 rounded-lg transition ${character === 'bunny' ? 'bg-emerald-500 text-white shadow' : 'hover:bg-slate-200'}`}
-              title="Bunny"
-            >
-              🐰
-            </button>
-            <button
-              onClick={() => { synth.playPop(); setCharacter('dino'); }}
-              className={`px-3 py-1.5 rounded-lg transition ${character === 'dino' ? 'bg-emerald-500 text-white shadow' : 'hover:bg-slate-200'}`}
-              title="Dino"
-            >
-              Rex 🦖
-            </button>
-            <button
-              onClick={() => { synth.playPop(); setCharacter('astronaut'); }}
-              className={`px-3 py-1.5 rounded-lg transition ${character === 'astronaut' ? 'bg-emerald-500 text-white shadow' : 'hover:bg-slate-200'}`}
-              title="Astronaut"
-            >
-              🚀
-            </button>
-          </div>
-        </div>
-
-        {/* Settings Button */}
+      {/* Settings Button (Right top, character selection moved inside to clear space) */}
+      <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-10">
         <button
           onClick={() => {
             synth.playPop();
             setShowSettings(!showSettings);
           }}
-          className="bg-slate-100 hover:bg-slate-200 text-emerald-600 font-bold p-1.5 rounded-xl transition"
+          className="bg-white/95 hover:bg-white text-emerald-600 font-bold p-2.5 sm:p-3 rounded-full border-2 sm:border-4 border-slate-200 hover:border-emerald-300 shadow-md transition"
+          title="Settings"
         >
-          <Settings size={18} />
+          <Settings size={16} className="sm:w-5 sm:h-5" />
         </button>
       </div>
 
-      {/* Customize drawer settings */}
+      {/* Customize drawer settings (Consolidated for all screen widths) */}
       <AnimatePresence>
         {showSettings && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-24 right-6 w-80 bg-white z-20 rounded-3xl p-6 shadow-2xl border-4 border-emerald-100 space-y-6"
+            className="absolute top-16 right-3 sm:top-24 sm:right-6 w-[90vw] xs:w-80 bg-white z-20 rounded-3xl p-5 sm:p-6 shadow-2xl border-2 sm:border-4 border-emerald-100 space-y-5 sm:space-y-6"
           >
-            <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2 border-b pb-2 border-slate-100 select-none">
-              ⚙️ Platform settings
+            <h3 className="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2 border-b pb-2 border-slate-100 select-none">
+              ⚙️ Game Settings
             </h3>
+
+            {/* Character Selector (Moved inside settings to prevent top-bar collision on phone) */}
+            <div>
+              <div className="flex justify-between text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-2 select-none">
+                <span>Choose Character</span>
+                <span className="text-emerald-600 font-extrabold capitalize">{character}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-2xl text-xs font-bold text-slate-600">
+                <button
+                  onClick={() => { synth.playPop(); setCharacter('bunny'); }}
+                  className={`py-2 rounded-xl transition ${character === 'bunny' ? 'bg-emerald-500 text-white shadow' : 'hover:bg-slate-200'}`}
+                >
+                  🐰 Bunny
+                </button>
+                <button
+                  onClick={() => { synth.playPop(); setCharacter('dino'); }}
+                  className={`py-2 rounded-xl transition ${character === 'dino' ? 'bg-emerald-500 text-white shadow' : 'hover:bg-slate-200'}`}
+                >
+                  🦖 Dino
+                </button>
+                <button
+                  onClick={() => { synth.playPop(); setCharacter('astronaut'); }}
+                  className={`py-2 rounded-xl transition ${character === 'astronaut' ? 'bg-emerald-500 text-white shadow' : 'hover:bg-slate-200'}`}
+                >
+                  🚀 Space
+                </button>
+              </div>
+            </div>
 
             {/* Platform gap spacing frequency */}
             <div>
-              <div className="flex justify-between text-xs font-bold text-slate-500 uppercase mb-2 select-none">
+              <div className="flex justify-between text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-2 select-none">
                 <span>Platform Gaps (Spacing)</span>
                 <span className="text-emerald-600 font-extrabold">{platformSpacing}px</span>
               </div>
@@ -1078,7 +1054,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
 
             {/* Wind booster spawn frequency */}
             <div>
-              <div className="flex justify-between text-xs font-bold text-slate-500 uppercase mb-2 select-none">
+              <div className="flex justify-between text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-2 select-none">
                 <span>Wind Booster Frequency</span>
                 <span className="text-emerald-600 font-extrabold">{boosterFrequency}%</span>
               </div>
@@ -1094,7 +1070,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
 
             {/* Character Speed Factor Slider */}
             <div>
-              <div className="flex justify-between text-xs font-bold text-slate-500 uppercase mb-2 select-none">
+              <div className="flex justify-between text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-2 select-none">
                 <span>Character Speed</span>
                 <span className="text-emerald-600 font-extrabold">{Math.round(speedFactor * 100)}%</span>
               </div>
@@ -1107,12 +1083,11 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
                 onChange={(e) => setSpeedFactor(parseFloat(e.target.value))}
                 className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
-              <span className="text-[9px] text-slate-400 select-none block mt-1">Adjusts how fast your character runs</span>
             </div>
 
             {/* Volume */}
             <div>
-              <div className="flex justify-between text-xs font-bold text-slate-500 uppercase mb-2 select-none">
+              <div className="flex justify-between text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-2 select-none">
                 <span>Sound FX Volume</span>
                 <span className="text-emerald-600 font-extrabold">{volume}%</span>
               </div>
@@ -1136,7 +1111,7 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
                 initLevel();
                 setShowSettings(false);
               }}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-sm active:scale-95 shadow-md transition"
+              className="w-full py-2.5 sm:py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-xs sm:text-sm active:scale-95 shadow-md transition"
             >
               🔄 Rebuild Level
             </button>
@@ -1144,16 +1119,16 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
         )}
       </AnimatePresence>
 
-      {/* Mobile Gamepad Controllers (Only displayed on touch devices/screens) */}
-      <div className="absolute bottom-6 left-6 right-6 z-10 pointer-events-none flex justify-between items-end">
+      {/* Mobile Gamepad Controllers (Responsive width and gap alignment) */}
+      <div className="absolute bottom-4 left-4 right-4 z-10 pointer-events-none flex justify-between items-end">
         {/* Left/Right Directional keys */}
-        <div className="flex gap-3 pointer-events-auto">
+        <div className="flex gap-3 pointer-events-auto mb-2 sm:mb-0">
           <button
             onMouseDown={() => handleTouchButton('left', true)}
             onMouseUp={() => handleTouchButton('left', false)}
             onTouchStart={(e) => { e.preventDefault(); handleTouchButton('left', true); }}
             onTouchEnd={(e) => { e.preventDefault(); handleTouchButton('left', false); }}
-            className="w-16 h-16 bg-white/80 active:bg-emerald-500 active:text-white text-slate-700 border-4 border-slate-100 hover:border-emerald-200 rounded-2xl shadow-xl flex items-center justify-center text-2xl font-bold transition focus:outline-none"
+            className="w-14 h-14 sm:w-16 sm:h-16 bg-white/80 active:bg-emerald-500 active:text-white text-slate-700 border-2 sm:border-4 border-slate-100 hover:border-emerald-200 rounded-2xl shadow-xl flex items-center justify-center text-xl sm:text-2xl font-bold transition focus:outline-none"
           >
             ◀️
           </button>
@@ -1162,36 +1137,36 @@ export const CloudHopper: React.FC<CloudHopperProps> = ({ onBack }) => {
             onMouseUp={() => handleTouchButton('right', false)}
             onTouchStart={(e) => { e.preventDefault(); handleTouchButton('right', true); }}
             onTouchEnd={(e) => { e.preventDefault(); handleTouchButton('right', false); }}
-            className="w-16 h-16 bg-white/80 active:bg-emerald-500 active:text-white text-slate-700 border-4 border-slate-100 hover:border-emerald-200 rounded-2xl shadow-xl flex items-center justify-center text-2xl font-bold transition focus:outline-none"
+            className="w-14 h-14 sm:w-16 sm:h-16 bg-white/80 active:bg-emerald-500 active:text-white text-slate-700 border-2 sm:border-4 border-slate-100 hover:border-emerald-200 rounded-2xl shadow-xl flex items-center justify-center text-xl sm:text-2xl font-bold transition focus:outline-none"
           >
             ▶️
           </button>
         </div>
 
-        {/* Jump key */}
-        <div className="pointer-events-auto">
+        {/* Jump key - Shifted upward by padding bottom on mobile screen layout to clear the watermark AAN */}
+        <div className="pointer-events-auto pb-12 sm:pb-0">
           <button
             onMouseDown={() => handleTouchButton('jump', true)}
             onMouseUp={() => handleTouchButton('jump', false)}
             onTouchStart={(e) => { e.preventDefault(); handleTouchButton('jump', true); }}
             onTouchEnd={(e) => { e.preventDefault(); handleTouchButton('jump', false); }}
-            className="w-20 h-20 bg-white/80 active:bg-pink-500 active:text-white text-slate-700 border-4 border-slate-100 hover:border-pink-200 rounded-full shadow-2xl flex flex-col items-center justify-center text-sm font-black uppercase transition focus:outline-none"
+            className="w-18 h-18 sm:w-20 sm:h-20 bg-white/80 active:bg-pink-500 active:text-white text-slate-700 border-2 sm:border-4 border-slate-100 hover:border-pink-200 rounded-full shadow-2xl flex flex-col items-center justify-center text-xs sm:text-sm font-black uppercase transition focus:outline-none"
           >
-            <span className="text-2xl">🔼</span>
-            <span className="text-[9px] text-slate-400 active:text-white leading-none">Jump</span>
+            <span className="text-xl sm:text-2xl">🔼</span>
+            <span className="text-[8px] sm:text-[9px] text-slate-400 active:text-white leading-none">Jump</span>
           </button>
         </div>
       </div>
 
-      {/* Floating Instruction help banner */}
+      {/* Floating Instruction help banner (Responsive spans full width on phone) */}
       {showHelper && (
-        <div className="absolute top-24 left-6 z-10 bg-white/30 backdrop-blur-md px-5 py-2 rounded-2xl border border-white/20 select-none text-left flex items-center gap-2 max-w-sm">
-          <p className="text-slate-800 text-xs font-semibold leading-normal">
+        <div className="absolute top-16 left-3 right-3 sm:top-24 sm:left-6 sm:right-auto z-10 bg-white/30 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 select-none text-left flex items-center justify-between gap-2 max-w-none sm:max-w-sm shadow-md">
+          <p className="text-slate-800 text-[10px] sm:text-xs font-semibold leading-normal">
             🎮 Press <b>Arrow Keys</b> / <b>A D</b>. Press jump twice to **Double Jump**! Pop <b>🎈 Balloons</b> & check settings for speed adjusters!
           </p>
           <button
             onClick={() => { synth.playPop(); setShowHelper(false); }}
-            className="hover:bg-slate-800/10 p-0.5 rounded-full text-slate-600 hover:text-rose-500 transition focus:outline-none"
+            className="hover:bg-slate-800/10 p-1 rounded-full text-slate-600 hover:text-rose-500 transition focus:outline-none flex-shrink-0"
             aria-label="Close instructions"
           >
             <X size={14} />
